@@ -65,6 +65,9 @@ void PendSV_Handler(void)
 {
 }
 
+// Modifying SysTick_Handler(void) 
+volatile uint32_t tick_counter = 0;  // Counter to track SysTick interrupts
+
 /**
   * @brief  This function handles SysTick Handler.
   * @param  None
@@ -72,7 +75,13 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
-    HAL_IncTick();
+  tick_counter = tick_counter + 1; // Increment by 1
+  if (tick_counter == 200) {
+    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);  // Toggle PC7 (Blue LED)
+    tick_counter = 0;  // Reset counter
+  }
+  // Original part of handler
+  HAL_IncTick();
 }
 
 /******************************************************************************/

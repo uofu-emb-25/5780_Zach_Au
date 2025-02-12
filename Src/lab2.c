@@ -6,9 +6,9 @@ int lab2_main(void) {
     // Enable GPIOC clock in RCC
     __HAL_RCC_GPIOC_CLK_ENABLE();
 
-    // Configure GPIOC 6 & 9
+    // Configure GPIOC 6, 7, 9
     GPIO_InitTypeDef initStr = {
-        GPIO_PIN_6 | GPIO_PIN_9,
+        GPIO_PIN_6 | GPIO_PIN_9 | GPIO_PIN_7,
         GPIO_MODE_OUTPUT_PP,
         GPIO_SPEED_FREQ_LOW,
         GPIO_NOPULL
@@ -16,7 +16,7 @@ int lab2_main(void) {
 
     HAL_GPIO_Init(GPIOC, &initStr);
 
-    // Set PC9 (green LED) to high
+    // Set PC9 (Green LED) to high
     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET);
 
     // Infinite Loop
