@@ -99,3 +99,14 @@ void SysTick_Handler(void)
 /*void PPP_IRQHandler(void)
 {
 }*/
+
+void EXTI0_1_IRQHandler(void)
+{
+    // Check if EXTI line 0 is pending.
+    if (EXTI->PR & (1 << 0)) {
+        My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); //PC8 (orange LED)
+        My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9); // PC9 (green LED)
+      // Clear pending flag for EXTI line 0.
+      EXTI->PR |= (1 << 0);
+    }
+}
