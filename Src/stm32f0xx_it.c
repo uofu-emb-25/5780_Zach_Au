@@ -102,11 +102,19 @@ void SysTick_Handler(void)
 
 void EXTI0_1_IRQHandler(void)
 {
-    // Check if EXTI line 0 is pending.
-    if (EXTI->PR & (1 << 0)) {
-        My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); //PC8 (orange LED)
-        My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9); // PC9 (green LED)
-      // Clear pending flag for EXTI line 0.
-      EXTI->PR |= (1 << 0);
+  // Check if EXTI line 0 is pending.
+  if (EXTI->PR & (1 << 0)) {
+    My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); //PC8 (orange LED)
+    My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9); // PC9 (green LED)
+
+    volatile uint32_t delaycount; // variable that can be changed at any time.
+    // delay loop that is a delay of about 1.5 seconds.
+    for (delaycount = 0; delaycount < 1500000; delaycount++)
+    {
+      // Empty loop
     }
+
+    // Clear pending flag for EXTI line 0.
+    EXTI->PR |= (1 << 0);
+  }
 }
