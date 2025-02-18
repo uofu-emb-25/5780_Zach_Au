@@ -114,6 +114,12 @@ void EXTI0_1_IRQHandler(void)
       // Empty loop
     }
 
+    // Toggle the pins again to represent this step:
+    // Add a second LED toggle so that the green and orange LEDs should exchange once before
+    // and after the delay loop.
+    My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); //PC8 (orange LED)
+    My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9); // PC9 (green LED)
+
     // Clear pending flag for EXTI line 0.
     EXTI->PR |= (1 << 0);
   }
