@@ -125,3 +125,13 @@ void EXTI0_1_IRQHandler(void)
     EXTI->PR |= (1 << 0);
   }
 }
+
+void TIM2_IRQHandler(void) {
+  if (TIM2->SR & TIM_SR_UIF) {  // Check update interrupt flag
+      TIM2->SR &= ~TIM_SR_UIF;  // Clear the flag
+
+      // Toggle PC8 and PC9 (both should be alternating)
+      GPIOC->ODR ^= (1 << 8);  // Toggle Green LED (PC8)
+      GPIOC->ODR ^= (1 << 9);  // Toggle Orange LED (PC9)
+  }
+}
