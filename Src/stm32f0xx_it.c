@@ -100,6 +100,7 @@ void SysTick_Handler(void)
 {
 }*/
 
+// lab 2 second checkoff
 void EXTI0_1_IRQHandler(void)
 {
   // Check if EXTI line 0 is pending.
