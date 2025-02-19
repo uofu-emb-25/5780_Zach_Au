@@ -126,6 +126,7 @@ void EXTI0_1_IRQHandler(void)
   }
 }
 
+// Lab 3.1
 void TIM2_IRQHandler(void) {
   if (TIM2->SR & TIM_SR_UIF) {  // Check update interrupt flag
       TIM2->SR &= ~TIM_SR_UIF;  // Clear the flag

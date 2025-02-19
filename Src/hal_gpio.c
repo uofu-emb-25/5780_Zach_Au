@@ -91,18 +91,19 @@ void TIM3_PWM(void) {
     RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
 
     // Configure timer 3 for 800 Hz
-    TIM3->PSC = 99; // Set PSC to 100 = 8 MHz / 100 = 80 kHz 
-    TIM3->ARR = 99; // Set ARR to 100 = 80 kHz / 100 = 800 Hz
+    TIM3->PSC = 100; // Set PSC to 100 = 8 MHz / 100 = 80 kHz 
+    TIM3->ARR = 100; // Set ARR to 100 = 80 kHz / 100 = 800 Hz
 
     TIM3->CCMR1 &= ~(TIM_CCMR1_OC1M | TIM_CCMR1_OC2M); // Clear bits
 
     // Configure Channel 1 (PWM Mode 2)
     TIM3->CCMR1 |= (7 << TIM_CCMR1_OC1M_Pos); // PWM Mode 2
-    TIM3->CCMR1 |= TIM_CCMR1_OC1PE; // Enable preload
-
     // Configure Channel 2 (PWM Mode 1)
     TIM3->CCMR1 |= (6 << TIM_CCMR1_OC2M_Pos); // PWM Mode 1
-    TIM3->CCMR1 |= TIM_CCMR1_OC2PE; // Enable preload
+
+    // Enable preload
+    TIM3->CCMR1 |= TIM_CCMR1_OC2PE;
+    TIM3->CCMR1 |= TIM_CCMR1_OC1PE;
 
     // Enable Output for CH1 & CH2
     TIM3->CCER |= TIM_CCER_CC1E; // Enable CH1 output
@@ -111,11 +112,16 @@ void TIM3_PWM(void) {
     // Enable TIM3 counter
     TIM3->CR1 |= TIM_CR1_CEN;
 
-    // Set PWM duty cycle to 20%
-    TIM3->CCR1 = 20; // 20% duty cycle
-    TIM3->CCR2 = 20; // 20% duty cycle
+    TIM3->CCR1 = 20; // Red LED duty cycle
+    // duty cycle > 20, the red LED will be dimmer
+    // duty cycle < 20, the red LED will be brighter
+
+    TIM3->CCR2 = 20; // Blue LED (?) duty cycle
+    // duty cycle > 20, the blue LED will be brighter
+    // duty cycle < 20, the blue LED will be dimmer
 }
 
+// For Lab 3.2
 void GPIO_Init_TIM3_PWM(void)
 {
     // Enable GPIOC clock

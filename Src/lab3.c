@@ -24,7 +24,6 @@ int lab3_main(void) {
     TIM2->EGR |= TIM_EGR_UG; // Enable Update Event (UEV)
     TIM2->CR1 |= TIM_CR1_CEN; // Enable Timer Counter
     TIM2->DIER |= TIM_DIER_UIE; // Enable update interrupt for TIM2
-    TIM2->CR1 |= TIM_CR1_CEN; // Enable Timer Counter
 
     // Enable TIM2 interrupt in NVIC
     NVIC_EnableIRQ(TIM2_IRQn);
