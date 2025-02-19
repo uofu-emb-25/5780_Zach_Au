@@ -11,20 +11,10 @@ int lab3_main(void) {
     // PC7 = Blue LED
     // PC8 = Green LED
     // PC9 = Orange LED
-    GPIOC->MODER &= ~(0b11 << (6 * 2)); // Clear mode bits for PC6
-    GPIOC->MODER &= ~(0b11 << (7 * 2)); // Clear mode bits for PC7
     GPIOC->MODER &= ~(0b11 << (8 * 2)); // Clear bits for PC8
     GPIOC->MODER &= ~(0b11 << (9 * 2)); // Clear bits for PC9
-    GPIOC->MODER |= (0b10 << (6 * 2)); // Set PC6 to alternate mode
-    GPIOC->MODER |= (0b10 << (7 * 2)); // Set PC7 to alternate mode
     GPIOC->MODER |= (0b01 << (8 * 2)); // Set PC8 as output
     GPIOC->MODER |= (0b01 << (9 * 2)); // Set PC9 as output
-
-    // Set PC6 and PC7 to AF0 (TIM3_CH1 and TIM3_CH2)
-    GPIOC->AFR[0] &= ~(0b1111 << (6 * 4));  // Clear AF bits for PC6
-    GPIOC->AFR[0] &= ~(0b1111 << (7 * 4));  // Clear AF bits for PC7
-    GPIOC->AFR[0] |= (0b0000 << (6 * 4));   // AF0 for PC6 (TIM3_CH1)
-    GPIOC->AFR[0] |= (0b0000 << (7 * 4));   // AF0 for PC7 (TIM3_CH2)
 
     // Enable TIM2 peripheral clock
     RCC->APB1ENR |= (1 << 0);  // Set TIM2EN bit in RCC_APB1ENR
@@ -43,6 +33,8 @@ int lab3_main(void) {
     // Initial LED setup
     GPIOC->BSRR = (1 << 8); // PC8 (Green) is on
     GPIOC->BSRR = (1 << (9 + 16)); // PC9 (Orange) is off
+
+    GPIO_Init_TIM3_PWM();
 
     TIM3_PWM();
 

@@ -94,13 +94,13 @@ void TIM3_PWM(void) {
     TIM3->PSC = 99; // Set PSC to 100 = 8 MHz / 100 = 80 kHz 
     TIM3->ARR = 99; // Set ARR to 100 = 80 kHz / 100 = 800 Hz
 
+    TIM3->CCMR1 &= ~(TIM_CCMR1_OC1M | TIM_CCMR1_OC2M); // Clear bits
+
     // Configure Channel 1 (PWM Mode 2)
-    TIM3->CCMR1 &= ~(TIM_CCMR1_CC1S); // Output mode
     TIM3->CCMR1 |= (7 << TIM_CCMR1_OC1M_Pos); // PWM Mode 2
     TIM3->CCMR1 |= TIM_CCMR1_OC1PE; // Enable preload
 
     // Configure Channel 2 (PWM Mode 1)
-    TIM3->CCMR1 &= ~(TIM_CCMR1_CC2S); // Output mode
     TIM3->CCMR1 |= (6 << TIM_CCMR1_OC2M_Pos); // PWM Mode 1
     TIM3->CCMR1 |= TIM_CCMR1_OC2PE; // Enable preload
 
@@ -108,8 +108,29 @@ void TIM3_PWM(void) {
     TIM3->CCER |= TIM_CCER_CC1E; // Enable CH1 output
     TIM3->CCER |= TIM_CCER_CC2E; // Enable CH2 output
 
+    // Enable TIM3 counter
+    TIM3->CR1 |= TIM_CR1_CEN;
+
     // Set PWM duty cycle to 20%
-    TIM3->CCR1 = 19; // 20% duty cycle
-    TIM3->CCR2 = 19; // 20% duty cycle
+    TIM3->CCR1 = 20; // 20% duty cycle
+    TIM3->CCR2 = 20; // 20% duty cycle
+}
+
+void GPIO_Init_TIM3_PWM(void)
+{
+    // Enable GPIOC clock
+    RCC->AHBENR |= RCC_AHBENR_GPIOCEN;
+
+    // Clear mode bits for PC6 and PC7
+    GPIOC->MODER &= ~(0b11 << (6 * 2)); // Clear mode bits for PC6
+    GPIOC->MODER &= ~(0b11 << (7 * 2)); // Clear mode bits for PC7
+
+    // Set PC6 and PC7 to alternate Mode
+    GPIOC->MODER |= (0b10 << (6 * 2)); // Set PC6 to alternate mode
+    GPIOC->MODER |= (0b10 << (7 * 2)); // Set PC7 to alternate mode
+
+    // Set PC6 and PC7 to AF0 (TIM3_CH1 and TIM3_CH2)
+    GPIOC->AFR[0] &= ~(0b1111 << (6 * 4));  // AF bits for PC6
+    GPIOC->AFR[0] &= ~(0b1111 << (7 * 4));  // AF bits for PC7
 }
 
