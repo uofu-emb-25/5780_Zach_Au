@@ -85,3 +85,31 @@ void Configure_EXTI_UserButton(void)
     assert((SYSCFG->EXTICR[0] & 0xF) == 0x0);
 }
 
+// For lab 3.2
+void TIM3_PWM(void) {
+    // Enable TIM3 clock
+    RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
+
+    // Configure timer 3 for 800 Hz
+    TIM3->PSC = 99; // Set PSC to 100 = 8 MHz / 100 = 80 kHz 
+    TIM3->ARR = 99; // Set ARR to 100 = 80 kHz / 100 = 800 Hz
+
+    // Configure Channel 1 (PWM Mode 2)
+    TIM3->CCMR1 &= ~(TIM_CCMR1_CC1S); // Output mode
+    TIM3->CCMR1 |= (7 << TIM_CCMR1_OC1M_Pos); // PWM Mode 2
+    TIM3->CCMR1 |= TIM_CCMR1_OC1PE; // Enable preload
+
+    // Configure Channel 2 (PWM Mode 1)
+    TIM3->CCMR1 &= ~(TIM_CCMR1_CC2S); // Output mode
+    TIM3->CCMR1 |= (6 << TIM_CCMR1_OC2M_Pos); // PWM Mode 1
+    TIM3->CCMR1 |= TIM_CCMR1_OC2PE; // Enable preload
+
+    // Enable Output for CH1 & CH2
+    TIM3->CCER |= TIM_CCER_CC1E; // Enable CH1 output
+    TIM3->CCER |= TIM_CCER_CC2E; // Enable CH2 output
+
+    // Set PWM duty cycle to 20%
+    TIM3->CCR1 = 19; // 20% duty cycle
+    TIM3->CCR2 = 19; // 20% duty cycle
+}
+
