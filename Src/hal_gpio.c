@@ -140,3 +140,4 @@ void GPIO_Init_TIM3_PWM(void)
     GPIOC->AFR[0] &= ~(0b1111 << (7 * 4));  // AF bits for PC7
 }
 
+
