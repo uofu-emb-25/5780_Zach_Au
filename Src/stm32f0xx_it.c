@@ -68,6 +68,7 @@ void PendSV_Handler(void)
 // Modifying SysTick_Handler(void) 
 volatile uint32_t tick_counter = 0;  // Counter to track SysTick interrupts
 
+// commented out to get rid of flashing blue led on lab 4
 /**
   * @brief  This function handles SysTick Handler.
   * @param  None
@@ -75,11 +76,11 @@ volatile uint32_t tick_counter = 0;  // Counter to track SysTick interrupts
   */
 void SysTick_Handler(void)
 {
-  tick_counter = tick_counter + 1; // Increment by 1
-  if (tick_counter == 200) {
-    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);  // Toggle PC7 (Blue LED)
-    tick_counter = 0;  // Reset counter
-  }
+  // tick_counter = tick_counter + 1; // Increment by 1
+  // if (tick_counter == 200) {
+  //   HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);  // Toggle PC7 (Blue LED)
+  //   tick_counter = 0;  // Reset counter
+  // }
   // Original part of handler
   HAL_IncTick();
 }
