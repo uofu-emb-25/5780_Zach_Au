@@ -92,7 +92,7 @@ void TIM3_PWM(void) {
 
     // Configure timer 3 for 800 Hz
     TIM3->PSC = 100; // Set PSC to 100 = 8 MHz / 100 = 80 kHz 
-    TIM3->ARR = 100; // Set ARR to 100 = 80 kHz / 100 = 800 Hz
+    TIM3->ARR = 99; // Set ARR to 100 = 80 kHz / 100 - 1 = 800 Hz
 
     TIM3->CCMR1 &= ~(TIM_CCMR1_OC1M | TIM_CCMR1_OC2M); // Clear bits
 
