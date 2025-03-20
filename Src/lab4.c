@@ -1,6 +1,10 @@
 #include <stm32f0xx_hal.h>
 #include "main.h" // main header file
 
+// Initilizing Global Variables
+int register_value = 0;
+char led_color;
+
 int lab4_main(void) {
     HAL_Init();  // Reset all peripherals, initialize Flash and Systick
     SystemClock_Config(); // Configure the system clock
@@ -39,42 +43,19 @@ int lab4_main(void) {
     GPIOC->MODER |= (0b01 << (8 * 2)); // Set PC8 as output
     GPIOC->MODER |= (0b01 << (9 * 2)); // Set PC9 as output
 
+    // Enable the RXNE interrupt
+    USART3->CR1 |= USART_CR1_RXNEIE;
+
+    // enable NVIC interupts
+    NVIC_EnableIRQ(USART3_4_IRQn);
+    NVIC_SetPriority(USART3_4_IRQn, 0);
+
+    // Send the initial message
+    transmit_string("LED Color?");
+
     // Infinite while loop
     while (1)
-    {
-        if (USART3->ISR & USART_ISR_RXNE) {
-            char c = USART3->RDR;
-            switch (c) {
-            // r key is pressed
-            case 'r':
-                transmit_string("RED LED\n");
-                HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6); // toggle red led
-                break;
-            
-            case 'b':
-                transmit_string("BLUE LED\n");
-                HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7); // toggle blue led
-                break;
-
-            case 'o':
-                transmit_string("ORANGE LED\n");
-                HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); // toggle orange led
-                break;
-
-            case 'g':
-                transmit_string("GREEN LED\n");
-                HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9); // toggle green led
-                break;
-
-
-            
-            // case for when a key other than the ones above is not pressed
-            default:
-                transmit_string("ERROR: invalid key\n");
-                break;
-            }   
-        } // Check flags
-    }
+    {}
     
 }
 
@@ -93,6 +74,115 @@ void transmit_char(char c) {
 void transmit_string(char string[]) {
     for(int i = 0; i < string[i] != '\0'; i++) {
         transmit_char(string[i]);
+    }
+    return;
+}
+
+void USART3_4_IRQHandler(void) {
+    if (USART3->ISR & USART_ISR_RXNE) {
+        char c = USART3->RDR;
+        // first character command
+        if(register_value == 0) {
+            switch (c) {
+                // r key is pressed
+                case 'r':
+                    transmit_string("RED LED\n");
+                    register_value++;
+                    led_color = 'r';
+                    break;
+                
+                case 'b':
+                    transmit_string("BLUE LED\n");
+                    register_value++;
+                    led_color = 'b';
+                    break;
+        
+                case 'o':
+                    transmit_string("ORANGE LED\n");
+                    register_value++;
+                    led_color = 'o';
+                    break;
+        
+                case 'g':
+                    transmit_string("GREEN LED\n");
+                    register_value++;
+                    led_color = 'g';
+                    break;
+        
+                // case for when a key other than the ones above is not pressed
+                default:
+                    transmit_string("ERROR: invalid key\n");
+                    break;
+            }   
+        }
+        // 2nd character command
+        else {
+            transmit_string("CMD? \n");
+            register_value = 0;
+            switch (c)
+            {
+            case '0': // turn off LED
+                if (led_color == 'r') {
+                    transmit_string("red led off \n");
+                    My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET); // RED LED off
+                }
+                if (led_color == 'b') {
+                    transmit_string("blue led off \n");
+                    My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET); // BLUE LED off
+                }
+                if (led_color == 'o') {
+                    transmit_string("orange led off \n");
+                    My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET); // ORANGE LED off
+                }
+                if (led_color == 'g') {
+                    transmit_string("green led off \n");
+                    My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_RESET); // GREEN LED off
+                }
+                break;
+
+                case '1': // turn on LED
+                if (led_color == 'r') {
+                    transmit_string("red led on \n");
+                    My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET); // RED LED on
+                }
+                if (led_color == 'b') {
+                    transmit_string("blue led on \n");
+                    My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET); // BLUE LED on
+                }
+                if (led_color == 'o') {
+                    transmit_string("orange led on \n");
+                    My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET); // ORANGE LED on
+                }
+                if (led_color == 'g') {
+                    transmit_string("green led on \n");
+                    My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET); // GREEN LED on
+                }
+                break;
+
+                case '2': // toggle LED
+                if (led_color == 'r') {
+                    transmit_string("red led toggle \n");
+                    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6); // Toggle RED LED
+                }
+                if (led_color == 'b') {
+                    transmit_string("blue led toggle \n");
+                    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7); // Toggle BLUE LED
+                }
+                if (led_color == 'o') {
+                    transmit_string("orange led toggle \n");
+                    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); // Toggle ORANGE LED
+                }
+                if (led_color == 'g') {
+                    transmit_string("green led toggle \n");
+                    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9); // Toggle GREEN LED
+                }
+                break;
+            
+            default:
+                transmit_string("ERROR: Invalid Character \n");
+                break;
+            }
+        }
     }
     return;
 }
