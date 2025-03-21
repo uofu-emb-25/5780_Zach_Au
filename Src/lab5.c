@@ -137,11 +137,11 @@ int lab5_main(void) {
 
     // Step 1: Write transaction
     int dummy; // Dummy variable
-    gyroscope(0x69, 1, &dummy, 0, 0x0F);
+    gyroscope(0x69, 1, &dummy, 0, whoAmIReg);
 
     // Step 2: Read transaction
     int whoValue = 0;
-    gyroscope(0x69, 1, &whoValue, 1, 0x0F);
+    gyroscope(0x69, 1, &whoValue, 1, whoAmIReg);
 
     // Step 3: Compare the received value with the expected value (0xD4)
     if (whoValue == expectedWhoAmI) {
