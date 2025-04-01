@@ -10,7 +10,8 @@ int lab6_main(void) {
     // Enable clock to GPIOC and GPIOA
     RCC->AHBENR |= RCC_AHBENR_GPIOCEN | RCC_AHBENR_GPIOAEN;
 
-    RCC->APB2ENR |= RCC_APB2ENR_ADC1EN; // Enable ADC1 clock
+    // Enable ADC1 clock
+    RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;
 
     ADC1->CFGR1 &= ~ADC_CFGR1_RES; // 8-bit resolution (00)
     ADC1->CFGR1 |= ADC_CFGR1_CONT; // Continuous conversion
@@ -19,10 +20,10 @@ int lab6_main(void) {
     ADC1->CHSELR = ADC_CHSELR_CHSEL0; // Select channel 0 (PA0)
 
     ADC1->CR |= ADC_CR_ADCAL; // Start calibration
-    while (ADC1->CR & ADC_CR_ADCAL); // Wait until calibration done
+    while (ADC1->CR & ADC_CR_ADCAL); // Wait until calibration is done
 
     ADC1->CR |= ADC_CR_ADEN; // Enable ADC
-    while (!(ADC1->ISR & ADC_ISR_ADRDY)); // Wait for ADC ready
+    while (!(ADC1->ISR & ADC_ISR_ADRDY)); // Wait for ADC flag is ready
 
     ADC1->CR |= ADC_CR_ADSTART;
 
@@ -42,7 +43,7 @@ int lab6_main(void) {
             // Clear all LED bits first (PC6 to PC9)
             GPIOC->ODR &= ~((0xF) << 6); // Clear PC6-PC9
 
-            // Set LEDs based on increasing ADC thresholds
+            // Set LEDs based on increasing ADC thresholds (note the potentimeter that I am using is a 104)
             if (adc_value >= 64)   GPIOC->ODR |= (1 << 6); // Turn on Red (PC6)
             if (adc_value >= 128)  GPIOC->ODR |= (1 << 7); // Turn on Blue (PC7)
             if (adc_value >= 192)  GPIOC->ODR |= (1 << 8); // Turn on Orange (PC8)
