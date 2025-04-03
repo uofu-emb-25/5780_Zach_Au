@@ -7,6 +7,10 @@
 // System clock configuration function prototype
 void SystemClock_Config(void);
 
+uint8_t gyroSlaveAddr = 0x69; // 7-bit slave address (when PB14 is HIGH)
+uint8_t whoAmIReg = 0x0F; // WHO_AM_I register address
+uint8_t expectedWhoAmI = 0xD4; // Expected WHO_AM_I value
+
 // Inline function to update LED state: only one LED on at a time.
 static inline void setLED(uint32_t ledPos) {
     GPIOC->ODR = (GPIOC->ODR & ~((1 << 6) | (1 << 7) | (1 << 8) | (1 << 9))) | (1 << ledPos);
@@ -133,6 +137,30 @@ int lab5_main(void)
     // Enable I2C2 peripheral
     I2C2->CR1 |= (1 << 0);
     
+    // // Step 1: Write transaction
+    // int dummy; // Dummy variable
+    // gyroscope(0x69, 1, &dummy, 0, 0x0F);
+    // gyroscope(0x69, 1, &dummy, 0, whoAmIReg);
+
+    // // Step 2: Read transaction
+    // int whoValue = 0;
+    // gyroscope(0x69, 1, &whoValue, 1, 0x0F);
+    // gyroscope(0x69, 1, &whoValue, 1, whoAmIReg);
+
+    // // Step 3: Compare the received value with the expected value (0xD4)
+    // if (whoValue == expectedWhoAmI) {
+    //     // Toggle all leds if success
+    //     HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6); // Toggle RED LED
+    //     HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7); // Toggle BLUE LED
+    //     HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); // Toggle ORANGE LED
+    //     HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9); // Toggle GREEN LED
+    // } else {
+    //     // Turn on red led to indicate fail
+    //     My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET); // Blue LED on
+    // }
+
+    // return 0;
+
     // Gyroscope initialization
     int ctrlValue = 11;
     gyroscope(0x69, 1, &ctrlValue, 0, 0x20);
