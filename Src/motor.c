@@ -192,8 +192,15 @@ void PI_update(void) {
     
     
     /// TODO: Calculate integral portion of PI controller, write to "error_integral" variable
+    error_integral += Ki * error;
     
     /// TODO: Clamp the value of the integral to a limited positive range
+    
+    // integral with upper (3200) and lower (0) bound limits
+    for (size_t i = 0; i < 3200; i++)
+    {
+        error_integral += i * error;
+    }
     
     /* Hint: The value clamp is needed to prevent excessive "windup" in the integral.
      *       You'll read more about this for the post-lab. The exact value is arbitrary
@@ -203,7 +210,7 @@ void PI_update(void) {
     
     /// TODO: Calculate proportional portion, add integral and write to "output" variable
     
-    int16_t output = 0; // Change this!
+    int16_t output = (Ki * error_integral) + (Kp * error);
     
     /* Because the calculated values for the PI controller are significantly larger than 
      * the allowable range for duty cycle, you'll need to divide the result down into 
@@ -222,9 +229,18 @@ void PI_update(void) {
      */
 
      /// TODO: Divide the output into the proper range for output adjustment
+    output = output << 5;
      
-     /// TODO: Clamp the output value between 0 and 100 
-    
+    /// TODO: Clamp the output value between 0 and 100 
+    if (output == 0)
+    {
+    output = 0;
+    }
+    else if (output <= 100)
+    {
+    output = 100;
+    }
+     
     pwm_setDutyCycle(output);
     duty_cycle = output;            // For debug viewing
 
