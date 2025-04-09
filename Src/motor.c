@@ -183,7 +183,7 @@ void PI_update(void) {
      */
     
     /// TODO: calculate error signal and write to "error" variable
-    error = motor_speed - target_rpm;
+    error = target_rpm - motor_speed;
     /* Hint: Remember that your calculated motor speed may not be directly in RPM!
      *       You will need to convert the target or encoder speeds to the same units.
      *       I recommend converting to whatever units result in larger values, gives
@@ -201,6 +201,7 @@ void PI_update(void) {
     {
         error_integral += i * error;
     }
+    
     
     /* Hint: The value clamp is needed to prevent excessive "windup" in the integral.
      *       You'll read more about this for the post-lab. The exact value is arbitrary
