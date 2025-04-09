@@ -82,7 +82,13 @@ void SysTick_Handler(void)
   //   tick_counter = 0;  // Reset counter
   // }
   // Original part of handler
+  // HAL_IncTick();
+
+  // From lab 7
   HAL_IncTick();
+  #if defined(LAB7)
+  Lab7_SysTick_Handler();
+  #endif
 }
 
 /******************************************************************************/

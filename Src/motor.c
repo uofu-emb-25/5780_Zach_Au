@@ -138,7 +138,7 @@ void TIM6_DAC_IRQHandler(void) {
     
     // Call the PI update function
     PI_update();
-    log_data();
+    // log_data();
     TIM6->SR &= ~TIM_SR_UIF;        // Acknowledge the interrupt
 }
 
@@ -182,16 +182,17 @@ void PI_update(void) {
      *
      */
     
-    /// TODO: calculate error signal and write to "error" variable
-    
+    /// : calculate error signal and write to "error" variable
+
     /* Hint: Remember that your calculated motor speed may not be directly in RPM!
      *       You will need to convert the target or encoder speeds to the same units.
      *       I recommend converting to whatever units result in larger values, gives
      *       more resolution.
      */
-    
+    error = motor_speed - target_rpm;
     
     /// TODO: Calculate integral portion of PI controller, write to "error_integral" variable
+    
     
     /// TODO: Clamp the value of the integral to a limited positive range
     
