@@ -11,8 +11,8 @@ volatile int16_t target_rpm = 0;    	// Desired speed target
 volatile int16_t motor_speed = 0;   	// Measured motor speed
 volatile int8_t adc_value = 0;      	// ADC measured motor current
 volatile int16_t error = 0;         	// Speed error signal
-volatile uint8_t Kp = 1;            	// Proportional gain
-volatile uint8_t Ki = 1;            	// Integral gain
+volatile uint8_t Kp = 0;            	// Proportional gain
+volatile uint8_t Ki = 0;            	// Integral gain
 
 // Sets up the entire motor drive system
 void motor_init(void) {
@@ -183,7 +183,7 @@ void PI_update(void) {
      */
     
     /// TODO: calculate error signal and write to "error" variable
-    error = target_rpm - motor_speed;
+    error = target_rpm*2.4 - motor_speed;
     /* Hint: Remember that your calculated motor speed may not be directly in RPM!
      *       You will need to convert the target or encoder speeds to the same units.
      *       I recommend converting to whatever units result in larger values, gives
@@ -197,10 +197,14 @@ void PI_update(void) {
     /// TODO: Clamp the value of the integral to a limited positive range
     
     // integral with upper (3200) and lower (0) bound limits
-    for (size_t i = 0; i < 3200; i++)
-    {
-        error_integral += i * error;
+    if(error_integral <= 0) {
+        error_integral = 0;
     }
+    if (error_integral >= 3200)
+    {
+        error_integral = 3200;
+    }
+    
     
     
     /* Hint: The value clamp is needed to prevent excessive "windup" in the integral.
@@ -233,11 +237,11 @@ void PI_update(void) {
     output = output << 5;
      
     /// TODO: Clamp the output value between 0 and 100 
-    if (output == 0)
+    if (output <= 0)
     {
     output = 0;
     }
-    else if (output <= 100)
+    else if (output >= 100)
     {
     output = 100;
     }

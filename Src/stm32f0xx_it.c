@@ -86,9 +86,9 @@ void SysTick_Handler(void)
   // for lab 7
   
   HAL_IncTick();
-  #if defined(LAB7)
+  //#if defined(LAB7)
   Lab7_Systick_Callback();
-    #endif
+  //#endif
 }
 
 /******************************************************************************/
